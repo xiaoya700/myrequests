@@ -83,7 +83,7 @@ class Session(_Session):
 
         print('{}: {}'.format(method, url))
         for i in range(4):
-            try:      
+            try:
                 r = self.send(prep, **send_kwargs)
                 r.raise_for_status()
                 return r
