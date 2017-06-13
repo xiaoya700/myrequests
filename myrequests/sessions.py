@@ -1,12 +1,13 @@
 # coding:utf-8
 
 import random
+import time
 from datetime import datetime
 from urllib.parse import urlencode
 
 from requests import Session as _Session
 from requests.models import Request
-from requests.exceptions import RequestException
+from requests.exceptions import Timeout, HTTPError
 
 
 class Session(_Session):
@@ -84,12 +85,17 @@ class Session(_Session):
         for i in range(4):
             try:      
                 r = self.send(prep, **send_kwargs)
+                r.raise_for_status()
                 return r
-            except RequestException:
-                pass
+            except Timeout:
+                why = ' Timeout '
+            except HTTPError:
+                why = '{} Error'.format(r.status_code)
+            if i != 3:
+                time.sleep(0.5)
 
-        print('Error: ', url)
         now = datetime.now()
-        t = now.strftime('%y-%m-%d %H:%M')
+        t = now.strftime('%y-%m-%d %H:%M:%S')
+        print('[{}] {}'.format(why, url))
         with open('./MyRequestsError.txt', 'a', encoding='utf-8') as f:
-            f.write('[{}] {}\n'.format(t, url))
+            f.write('[{}] [{}] {}\n'.format(t, why, url))

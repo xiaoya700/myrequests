@@ -7,7 +7,6 @@ import myrequests
 
 
 class TestMyRequests(unittest.TestCase):
-    """myrequests test cases."""
     
     def setUp(self):
         pass

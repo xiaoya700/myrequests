@@ -52,7 +52,7 @@ def test_requests2(url):
     for n in range(100):
         r = requests.get(url, headers=headers, timeout=3)
         
-        
+
 @finished
 def test_requests3(url):
     
@@ -62,13 +62,13 @@ def test_requests3(url):
 
 
 def main():
-    url = 'https://www.baidu.com'
+    url = 'https://www.zzzzer.com'
     test_myrequests1(url)
     # test_myrequests2(url)
     # test_myrequests3(url)
-    test_requests1(url)
+    # test_requests1(url)
     # test_requests2(url)
-    #test_requests3(url)
+    # test_requests3(url)
 
 
 if __name__ == '__main__':
