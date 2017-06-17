@@ -1,7 +1,7 @@
 # coding:utf-8
 
 import random
-import time
+from time import sleep
 from datetime import datetime
 from urllib.parse import urlencode
 
@@ -42,7 +42,7 @@ class Session(_Session):
         cookies=None,
         files=None,
         auth=None,
-        timeout=3,
+        timeout=2,
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -83,7 +83,7 @@ class Session(_Session):
 
         print('{}: {}'.format(method, url))
         for i in range(4):
-            try:
+            try:      
                 r = self.send(prep, **send_kwargs)
                 r.raise_for_status()
                 return r
@@ -92,7 +92,7 @@ class Session(_Session):
             except HTTPError:
                 why = '{} Error'.format(r.status_code)
             if i != 3:
-                time.sleep(0.5)
+                sleep(1)
 
         now = datetime.now()
         t = now.strftime('%y-%m-%d %H:%M:%S')
