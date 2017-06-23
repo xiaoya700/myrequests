@@ -30,10 +30,10 @@ if r:
 
 下载地址: 
 
-github: [https://github.com/zzzzzer/myrequests](https://github.com/zzzzzer/myrequests)
+github: [https://github.com/zzzzer91/myrequests](https://github.com/zzzzer91/myrequests)
 
 另外附赠一个基于此的小爬虫, 呃, 就是抓取一些妹子图片啦, hh:
 
-github: [https://github.com/zzzzzer/mzitu_spider](https://github.com/zzzzzer/mzitu_spider)
+github: [https://github.com/zzzzer91/mzitu_spider](https://github.com/zzzzer91/mzitu_spider)
 
 该网站有个简单的反爬措施, 爬取一段时间后, 就会返回514, 这时候就要等待零点几秒, 再继续. 我封装的库已经包含了应对的逻辑
