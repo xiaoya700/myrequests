@@ -9,8 +9,8 @@ setup(
     version='1.0', 
     description='This is my requests',
     author='zzzzer', 
-    author_email='ghf729359225@gmail.com',
-    url='https://github.com/zzzzzer/myrequests',
+    author_email='zzzzer91@gmail.com',
+    url='https://github.com/zzzzer91/myrequests',
     packages=['myrequests'], 
     install_requires=[
         'requests>=2.10.0',
