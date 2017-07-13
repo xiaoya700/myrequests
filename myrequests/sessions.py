@@ -49,7 +49,8 @@ class Session(_Session):
         stream=None,
         verify=None,
         cert=None,
-        json=None):
+        json=None,
+        log=True):
 
         if params:
             url = '{}?{}'.format(url, urlencode(params))
@@ -81,9 +82,10 @@ class Session(_Session):
         }
         send_kwargs.update(settings)
 
-        print('{}: {}'.format(method, url))
+        if log:
+            print('{}: {}'.format(method, url))
         for i in range(4):
-            try:      
+            try:
                 r = self.send(prep, **send_kwargs)
                 r.raise_for_status()
                 return r
@@ -97,5 +99,6 @@ class Session(_Session):
         now = datetime.now()
         t = now.strftime('%y-%m-%d %H:%M:%S')
         print('[{}] {}'.format(why, url))
-        with open('./MyRequestsError.txt', 'a', encoding='utf-8') as f:
+        with open('./MyRequestsError.log', 'a', encoding='utf-8') as f:
             f.write('[{}] [{}] {}\n'.format(t, why, url))
+            
