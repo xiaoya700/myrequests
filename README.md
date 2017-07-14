@@ -20,9 +20,13 @@ requests是一个相当相当棒的库, 让写爬虫变得如此简单, 但为�
 ```python
 import myrequests as requests # 推荐这么写
 
-
 url = 'https://www.baidu.com'
 r = requests.get(url)
+if r:
+    print(r.text)
+
+# 不打印请求信息
+r = requests.get(url, log=False)
 if r:
     print(r.text)
 ```
