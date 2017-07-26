@@ -62,13 +62,13 @@ def test_requests3(url):
 
 
 def main():
-    url = 'https://www.zzzzer.com'
+    url = 'https://www.baidu.com'
     test_myrequests1(url)
-    # test_myrequests2(url)
-    # test_myrequests3(url)
-    # test_requests1(url)
-    # test_requests2(url)
-    # test_requests3(url)
+    test_myrequests2(url)
+    test_myrequests3(url)
+    test_requests1(url)
+    test_requests2(url)
+    test_requests3(url)
 
 
 if __name__ == '__main__':
