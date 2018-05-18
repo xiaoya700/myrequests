@@ -19,7 +19,7 @@ def test_myrequests1(url):
 
     for n in range(100):
         r = myrequests.get(url)
-        #print(r.request.headers)
+        print(r.request.headers)
 
 
 @finished
@@ -27,7 +27,7 @@ def test_myrequests2(url):
 
     for n in range(100):
         r = myrequests.get(url, headers=headers)
-        #print(r.request.headers)
+        print(r.request.headers)
 
 
 @finished
@@ -36,7 +36,7 @@ def test_myrequests3(url):
     with myrequests.Session() as session:
         for n in range(100):
             r = session.get(url)
-            #print(r.request.headers)
+            print(r.request.headers)
 
 
 @finished
@@ -66,12 +66,12 @@ def test_requests3(url):
 
 def main():
     url = 'https://www.baidu.com'
-    test_myrequests1(url)
-    test_myrequests2(url)
+    #test_myrequests1(url)
+    #test_myrequests2(url)
     test_myrequests3(url)
-    test_requests1(url)
-    test_requests2(url)
-    test_requests3(url)
+    #test_requests1(url)
+    #test_requests2(url)
+    #test_requests3(url)
 
 
 if __name__ == '__main__':

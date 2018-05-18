@@ -31,21 +31,21 @@ class Session(_Session):
     )
 
     def request(self, method, url,
-        params=None,
-        data=None,
-        headers=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=2,
-        allow_redirects=True,
-        proxies=None,
-        hooks=None,
-        stream=None,
-        verify=None,
-        cert=None,
-        json=None):
-        
+                params=None,
+                data=None,
+                headers=None,
+                cookies=None,
+                files=None,
+                auth=None,
+                timeout=2,
+                allow_redirects=True,
+                proxies=None,
+                hooks=None,
+                stream=None,
+                verify=None,
+                cert=None,
+                json=None):
+
         if headers:
             # TODO 'user-agent'可能是大写, 这样就有些问题
             headers.update({'user-agent': choice(self._user_agent_list)})
@@ -53,16 +53,16 @@ class Session(_Session):
             headers = {'user-agent': choice(self._user_agent_list)}
 
         req = Request(
-            method = method.upper(),
-            url = url,
-            headers = headers,
-            files = files,
-            data = data or {},
-            json = json,
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            files=files,
+            data=data or {},
+            json=json,
             params=params or {},
-            auth = auth,
-            cookies = cookies,
-            hooks = hooks,
+            auth=auth,
+            cookies=cookies,
+            hooks=hooks,
         )
         prep = self.prepare_request(req)
 
@@ -90,6 +90,6 @@ class Session(_Session):
             except HTTPError:
                 why = '%s' % r.status_code
             if i != 3:
-                logger.warning('Retry %d >>> %s' % (i+1, message))
+                logger.warning('Retry %d >>> %s' % (i + 1, message))
                 sleep(1)
         logger.error('[%s] %s' % (why, message))
