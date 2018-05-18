@@ -1,13 +1,11 @@
-# coding:utf-8
-
-import random
 from time import sleep
-from datetime import datetime
-from urllib.parse import urlencode
+from random import choice
 
 from requests import Session as _Session
 from requests.models import Request
 from requests.exceptions import Timeout, HTTPError
+
+from .log import logger
 
 
 class Session(_Session):
@@ -32,9 +30,6 @@ class Session(_Session):
         "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
     )
 
-    def __init__(self):
-        super().__init__()
-
     def request(self, method, url,
         params=None,
         data=None,
@@ -49,13 +44,13 @@ class Session(_Session):
         stream=None,
         verify=None,
         cert=None,
-        json=None,
-        log=True):
-
-        if params:
-            url = '{}?{}'.format(url, urlencode(params))
-            
-        headers = headers or {'user-agent': random.choice(self._user_agent_list)}
+        json=None):
+        
+        if headers:
+            # TODO 'user-agent'可能是大写, 这样就有些问题
+            headers.update({'user-agent': choice(self._user_agent_list)})
+        else:
+            headers = {'user-agent': choice(self._user_agent_list)}
 
         req = Request(
             method = method.upper(),
@@ -64,6 +59,7 @@ class Session(_Session):
             files = files,
             data = data or {},
             json = json,
+            params=params or {},
             auth = auth,
             cookies = cookies,
             hooks = hooks,
@@ -82,23 +78,18 @@ class Session(_Session):
         }
         send_kwargs.update(settings)
 
-        if log:
-            print('{}: {}'.format(method, url))
+        message = '%s: %s' % (method, prep.url)
+        logger.info(message)
         for i in range(4):
             try:
                 r = self.send(prep, **send_kwargs)
                 r.raise_for_status()
                 return r
             except Timeout:
-                why = ' Timeout '
+                why = 'Timeout'
             except HTTPError:
-                why = '{} Error'.format(r.status_code)
+                why = '%s' % r.status_code
             if i != 3:
+                logger.warning('Retry %d >>> %s' % (i+1, message))
                 sleep(1)
-
-        now = datetime.now()
-        t = now.strftime('%y-%m-%d %H:%M:%S')
-        print('[{}] {}'.format(why, url))
-        with open('./MyRequestsError.log', 'a', encoding='utf-8') as f:
-            f.write('[{}] [{}] {}\n'.format(t, why, url))
-            
+        logger.error('[%s] %s' % (why, message))
