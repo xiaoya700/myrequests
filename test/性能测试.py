@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding:utf-8
 
-'''requests 和 myrequests 性能测试'''
+"""requests 和 myrequests 性能测试"""
 
 import requests
 
@@ -44,6 +44,7 @@ def test_requests1(url):
 
     for n in range(100):
         r = requests.get(url, headers=headers)
+        print(r.request.headers)
 
 
 @finished
@@ -51,6 +52,7 @@ def test_requests2(url):
 
     for n in range(100):
         r = requests.get(url, headers=headers, timeout=3)
+        print(r.request.headers)
         
 
 @finished
@@ -59,6 +61,7 @@ def test_requests3(url):
     with requests.Session() as session:
         for n in range(100):
             r = session.get(url, headers=headers)
+            print(r.request.headers)
 
 
 def main():

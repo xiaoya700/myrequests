@@ -15,7 +15,7 @@ class TestMyRequests(unittest.TestCase):
         pass
 
     def test_invald_url(self):
-        r = myrequests.get('http://wwwwwwww')
+        r = myrequests.get('http://www.zzzzer.com/123')
         self.assertEqual(r, None)
 
     def test_HTTP_200_OK_GET(self):
