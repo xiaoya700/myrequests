@@ -6,7 +6,7 @@
 import requests
 
 import myrequests
-from finished import finished # 我写的一个打印函数运行时间的小库
+from finished import finished
 
 
 headers = {
