@@ -23,7 +23,8 @@ class MyLog(metaclass=SingletonMeta):
         self._logger.setLevel(logging.INFO)
         formatter = logging.Formatter(
             '[%(asctime)s] [%(levelname)s] %(message)s', 
-            datefmt='%Y-%m-%d %A %H:%M:%S'
+            # 还有 %A 代表星期
+            datefmt='%Y-%m-%d %H:%M:%S'
         )
         cmd_handler = logging.StreamHandler()
         cmd_handler.setFormatter(formatter)

@@ -6,7 +6,7 @@ def request(method, url, **kwargs):
         return session.request(method=method, url=url, **kwargs)
 
 
-def get(url, params=None, **kwargs)
+def get(url, params=None, **kwargs):
     return request('get', url, params=params, **kwargs)
 
 
