@@ -46,11 +46,15 @@ class Session(_Session):
                 cert=None,
                 json=None):
 
-        if headers:
-            # TODO 'user-agent'可能是大写, 这样就有些问题
-            headers.update({'user-agent': choice(self._user_agent_list)})
+        user_agent = {'user-agent': choice(self._user_agent_list)}
+        if isinstance(headers, dict):
+            # 判断字典中是否已经存在'user-agent'这个key
+            # 'user-agent'可能是大写, 将其转换成全小写
+            s = {k.lower() for k in headers}
+            if 'user-agent' not in s:
+                headers.update(user_agent)
         else:
-            headers = {'user-agent': choice(self._user_agent_list)}
+            headers = user_agent
 
         req = Request(
             method=method.upper(),

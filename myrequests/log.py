@@ -13,16 +13,25 @@ class SingletonMeta(type):
 
 
 class MyLog(metaclass=SingletonMeta):
+    __slots__ = ('_logger',)
+
     def __init__(self):
         self._logger = logging.getLogger('MyRequests')
         self._set_logger()
 
     def _set_logger(self):
         self._logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
+        formatter = logging.Formatter(
+            '[%(asctime)s] [%(levelname)s] %(message)s', 
+            datefmt='%Y-%m-%d %A %H:%M:%S'
+        )
         cmd_handler = logging.StreamHandler()
         cmd_handler.setFormatter(formatter)
-        file_handler = logging.FileHandler('MyRequestsError.log', mode='a', delay=True)
+        file_handler = logging.FileHandler(
+            'MyRequestsError.log', 
+            mode='a', 
+            delay=True
+        )
         file_handler.setLevel(logging.ERROR)
         file_handler.setFormatter(formatter)
         self._logger.addHandler(file_handler)
