@@ -48,8 +48,7 @@ class Session(_Session):
 
         user_agent = {'user-agent': choice(self._user_agent_list)}
         if isinstance(headers, dict):
-            # 判断字典中是否已经存在'user-agent'这个key
-            # 'user-agent'可能是大写, 将其转换成全小写
+            # 判断字典中是否已经存在'user-agent'这个key, 不区分大小写
             s = {k.lower() for k in headers}
             if 'user-agent' not in s:
                 headers.update(user_agent)
