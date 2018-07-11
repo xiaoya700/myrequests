@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='myrequests', 
-    version='1.1', 
+    version='1.2', 
     author='zzzzer', 
     author_email='zzzzer91@gmail.com',
     url='https://github.com/zzzzer91/myrequests',
