@@ -1,34 +1,17 @@
-from time import sleep
-from random import choice
+import os
+import time
 
 from requests import Session as _Session
 from requests.models import Request
-from requests.exceptions import Timeout, HTTPError
+from requests.exceptions import Timeout, HTTPError, ConnectionError, ChunkedEncodingError
 
 from .log import logger
 
 
+TRY_COUNT = 4 # 请求失败后, 尝试次数
+
+
 class Session(_Session):
-    _user_agent_list = (
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
-        "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6",
-        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6",
-        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5",
-        "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
-        "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
-        "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
-    )
 
     def request(self, method, url,
                 params=None,
@@ -37,7 +20,7 @@ class Session(_Session):
                 cookies=None,
                 files=None,
                 auth=None,
-                timeout=2,
+                timeout=5,
                 allow_redirects=True,
                 proxies=None,
                 hooks=None,
@@ -45,15 +28,6 @@ class Session(_Session):
                 verify=None,
                 cert=None,
                 json=None):
-
-        user_agent = {'user-agent': choice(self._user_agent_list)}
-        if isinstance(headers, dict):
-            # 判断字典中是否已经存在'user-agent'这个key, 不区分大小写
-            s = {k.lower() for k in headers}
-            if 'user-agent' not in s:
-                headers.update(user_agent)
-        else:
-            headers = user_agent
 
         req = Request(
             method=method.upper(),
@@ -83,16 +57,20 @@ class Session(_Session):
 
         message = '%s: %s' % (method, prep.url)
         logger.info(message)
-        for i in range(4):
+        for i in range(TRY_COUNT+1):
             try:
                 r = self.send(prep, **send_kwargs)
                 r.raise_for_status()
                 return r
             except Timeout:
                 why = 'Timeout'
+            except ConnectionError:
+                why = 'ConnectionError'
             except HTTPError:
                 why = '%s' % r.status_code
-            if i != 3:
-                logger.warning('Retry %d >>> %s' % (i + 1, message))
-                sleep(1)
+            except ChunkedEncodingError: # 读到的字节数与实际字节数不符
+                why = 'ChunkedEncodingError'
+            if i != TRY_COUNT:
+                logger.warning('%s, %s, retry %d >>> %s' % (os.getpid(), why, i + 1, message))
+                time.sleep(3)
         logger.error('[%s] %s' % (why, message))

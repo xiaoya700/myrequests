@@ -9,10 +9,9 @@ API与requests完全一致, 所以可以很方便的改回requests.
 ### 增加功能
 
 - 打印每次请求的url, 如: '[2018-05-18 18:00:19,745] [INFO] get: xxx.xxx.com'
-- headers不指定user-agent, 则每次请求会随机选择一个user-agent
-- 默认请求的等待时间缩短为2s, 请求无响应会等待1s重新尝试, 至多4次
-- 返回状态码非200或3XX, 也会等待1s后重新尝试, 至多4次, 可以应对抓取过快, 服务器返回错误状态码情况
-- 4次失败后, 不抛出异常, 会打印错误信息, 返回None, 并在当前目录下生成错误信息文件MyRequestsError.log
+- 默认请求的等待时间缩短为5s, 请求无响应会等待3s重新尝试, 至多5次
+- 返回状态码非200或3XX, 也会等待3s后重新尝试, 至多5次, 可以应对抓取过快, 服务器返回错误状态码情况
+- 5次失败后, 不抛出异常, 会打印错误信息, 返回None, 并在当前目录下生成错误信息文件MyRequestsError.log
 
 
 ### Useage
@@ -27,7 +26,7 @@ if r:
 
 # 不打印请求信息
 from myrequests import logger
-logger.switch_print_info(open_info=False)
+logger.close_print_info()
 r = requests.get(url)
 if r:
     print(r.text)

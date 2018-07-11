@@ -47,19 +47,17 @@ class MyLog(metaclass=SingletonMeta):
     def error(self, message):
         self._logger.error(message)
 
-    def switch_print_info(self, open_info=True):
-        if open_info:
-            self._logger.setLevel(logging.INFO)
-        else:
-            self._logger.setLevel(logging.WARNING)
+    def close_print_info(self):
+        self._logger.setLevel(logging.WARNING)
 
 
 logger = MyLog()
 
+
 if __name__ == '__main__':
     logger2 = MyLog()
     print(logger is logger2)
-    # logger.switch_print_info(False)
+    # logger.close_print_info()
     logger.info('this is a logger info message')
     logger.warning('this is a logger warning message')
     # logger.error('this is a logger error message')
